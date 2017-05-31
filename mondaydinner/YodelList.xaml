@@ -1,0 +1,76 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage 	xmlns="http://xamarin.com/schemas/2014/forms" 
+				xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+                xmlns:maps="clr-namespace:Xamarin.Forms.Maps;assembly=Xamarin.Forms.Maps"
+				x:Class="mondaydinner.YodelList"
+				Title="Azure Todo">
+  <Grid RowSpacing="0">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="*" />
+    </Grid.RowDefinitions>
+    <ActivityIndicator Grid.RowSpan="3"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center"
+                       IsVisible="False"
+                       IsEnabled="True"
+                       x:Name="syncIndicator"/>
+    <StackLayout Grid.Row="0" BackgroundColor="#5ABAFF" Padding="10,30,10,5">
+      <Label TextColor="#555555" Text="Azure App Service" />
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition/>
+          <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <Entry x:Name="newItemName"
+                  Placeholder="Item name" />
+        <StackLayout x:Name="buttonsPanel" Grid.Column="1" Orientation="Horizontal" HorizontalOptions="StartAndExpand">
+          <Button Text="+"
+                  MinimumHeightRequest="30"
+                  Clicked="OnAdd" />
+                    <Button x:Name="loginButton" Text="Sign-in" MinimumHeightRequest="30"
+     Clicked="loginButton_Clicked"/>
+                </StackLayout>
+      </Grid>
+    </StackLayout>
+        <!--<StackLayout Grid.Row="1" VerticalOptions="StartAndExpand" Padding="30">
+            <maps:Map WidthRequest="320" HeightRequest="200"
+            x:Name="YodelMap"
+            IsShowingUser="true"
+            MapType="Street"
+        />
+        </StackLayout>-->
+        <StackLayout Grid.Row="1" VerticalOptions="StartAndExpand" Padding="30">
+            <maps:Map WidthRequest="320" HeightRequest="200"
+            x:Name="YodelMap"
+            MapType="Street"
+        />
+        </StackLayout>
+        <ListView x:Name="yodelList"
+				ItemSelected="OnSelected"
+				IsPullToRefreshEnabled="true" Refreshing="OnRefresh"
+				Grid.Row="2">
+      <ListView.ItemTemplate>
+        <DataTemplate>
+          <ViewCell>
+            <ViewCell.ContextActions>
+              <MenuItem Clicked="OnComplete" Text="Complete" CommandParameter="{Binding .}"/>
+            </ViewCell.ContextActions>
+            <StackLayout HorizontalOptions="StartAndExpand" Orientation="Horizontal" Padding="15,5,0,0">
+              <StackLayout Padding="5,0,0,0" VerticalOptions="StartAndExpand" Orientation="Vertical">
+                <Image Source="{Binding Avatar}" />
+                <Label Text="{Binding Message}"  />
+                <Label Text="{Binding Latitude}" />
+            </StackLayout>
+            </StackLayout>
+          </ViewCell>
+        </DataTemplate>
+      </ListView.ItemTemplate>
+    </ListView>
+        <StackLayout Grid.Row="3" BackgroundColor="#5ABAFF" Padding="10,30,10,5">
+            <Label x:Name="timestampLabel" TextColor="#555555" Text="..Timestamp.." />
+            <Label x:Name="latitudeLabel" TextColor="#555555" Text="..Latitude.." />
+            <Label x:Name="longitudeLabel" TextColor="#555555" Text="..Longitude.." />
+        </StackLayout>
+    </Grid>
+</ContentPage>
