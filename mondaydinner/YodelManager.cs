@@ -38,7 +38,17 @@ namespace mondaydinner
 
         private YodelManager()
         {
-            this.client = new MobileServiceClient(Constants.ApplicationURL);
+            var handler = new AuthHandler();
+
+            //Create our client and pass in Authentication handler
+            client = new MobileServiceClient(Constants.ApplicationURL, handler);
+            //this.client = new MobileServiceClient(Constants.ApplicationURL);
+
+            //assign mobile client to handler
+            handler.Client = client;
+
+            client.CurrentUser = new MobileServiceUser(Settings.UserId);
+            client.CurrentUser.MobileServiceAuthenticationToken = Settings.AuthToken;
 
 #if OFFLINE_SYNC_ENABLED
             var store = new MobileServiceSQLiteStore(offlineDbPath);
@@ -75,7 +85,7 @@ namespace mondaydinner
             get { return yodelTable is Microsoft.WindowsAzure.MobileServices.Sync.IMobileServiceSyncTable<Yodel>; }
         }
 
-        public async Task<ObservableCollection<Yodel>> GetTodoItemsAsync(bool syncItems = false)
+        public async Task<ObservableCollection<Yodel>> GetYodelsAsync(bool syncItems = false)
         {
             try
             {
@@ -102,7 +112,7 @@ namespace mondaydinner
             return null;
         }
 
-        public async Task SaveTaskAsync(Yodel item)
+        public async Task SaveYodelAsync(Yodel item)
         {
             if (item.Id == null)
             {

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.WindowsAzure.MobileServices;
+using Plugin.Geolocator;
+using System;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Maps;
@@ -20,6 +22,23 @@ namespace mondaydinner
             // Set syncItems to true to synchronize the data on startup when offline is enabled.
             if (authenticated == true)
                 await RefreshItems(true, syncItems: false);
+        }
+
+        async void authButton_Clicked(object sender, EventArgs e)
+        {
+            if (!Settings.IsLoggedIn)
+            {
+                //await azureService.Initialize();
+                //var authenticator = await DependencyService.Get<IAuthentication>();
+                //var user = authenticator.LoginAsync(azureService.MobileService, MobileServiceAuthenticationProvider.Facebook);
+                //if (user == null)
+                //    return;
+
+                //pull latest data from server:
+                //var coffees = await azureService.GetCoffees();
+                //Coffees.ReplaceRange(coffees);
+                //SortCoffees();
+            }
         }
 
         public YodelList()
@@ -62,24 +81,60 @@ namespace mondaydinner
         // Data methods
         async Task AddItem(Yodel item)
         {
-            await manager.SaveTaskAsync(item);
-            yodelList.ItemsSource = await manager.GetTodoItemsAsync();
+            await manager.SaveYodelAsync(item);
+            yodelList.ItemsSource = await manager.GetYodelsAsync();
         }
 
         async Task CompleteItem(Yodel item)
         {
             //item.Done = true;
-            await manager.SaveTaskAsync(item);
-            yodelList.ItemsSource = await manager.GetTodoItemsAsync();
+            await manager.SaveYodelAsync(item);
+            yodelList.ItemsSource = await manager.GetYodelsAsync();
         }
 
         public async void OnAdd(object sender, EventArgs e)
         {
-            var todo = new Yodel { Message = newItemName.Text };
-            await AddItem(todo);
+            var locator = CrossGeolocator.Current;
+            if (locator.IsGeolocationAvailable && locator.IsGeolocationEnabled)
+            {
+                locator.DesiredAccuracy = 50;
+                labelGPS.Text = "Getting gps";
 
-            newItemName.Text = string.Empty;
-            newItemName.Unfocus();
+                try
+                {
+                    var position = await locator.GetPositionAsync(timeoutMilliseconds: 10000);
+
+                    if (position == null)
+                    {
+                        labelGPS.Text = "null gps :(";
+                        return;
+                    }
+                    labelGPS.Text = string.Format("Time: {0} \nLat: {1} \nLong: {2} \n Altitude: {3} \nAltitude Accuracy: {4} \nAccuracy: {5} \n Heading: {6} \n Speed: {7}",
+                position.Timestamp, position.Latitude, position.Longitude,
+        position.Altitude, position.AltitudeAccuracy, position.Accuracy, position.Heading, position.Speed);
+
+                    var yodel = new Yodel {
+                        CreatedAt = DateTime.Now,
+                        Latitude = position.Latitude,
+                        Longitude = position.Longitude,
+                        Deleted = false,
+                        Message = newItemName.Text };
+                    await AddItem(yodel);
+
+                    newItemName.Text = string.Empty;
+                    newItemName.Unfocus();
+                }
+                catch (Exception ex)
+                {
+                    //await DisplayAlert("Geolocator Error", "Couldn't access GPS", "OK");
+                    labelGPS.Text = "Geolocator Error: " + ex.Message;
+                }
+            }
+            else
+            {
+                //await DisplayAlert("Location Error", "Couldn't access GPS", "OK");
+                labelGPS.Text = "Location Error: Couldn't access GPS.";
+            }
         }
 
         // Event handlers
@@ -93,11 +148,12 @@ namespace mondaydinner
 
             YodelMap.MoveToRegion(
                 MapSpan.FromCenterAndRadius(
-                    new Position(latitude, longitude), Distance.FromMiles(1)));
+                    new Position(latitude, longitude), Distance.FromMiles(6)));
 
             var pin = new Pin();
             pin.Label = message;
             pin.Position = new Position(latitude, longitude);
+            pin.Type = PinType.SearchResult;
             YodelMap.Pins.Clear();
             YodelMap.Pins.Add(pin);
 
@@ -126,8 +182,8 @@ namespace mondaydinner
         public async void OnComplete(object sender, EventArgs e)
         {
             var mi = ((MenuItem)sender);
-            var todo = mi.CommandParameter as Yodel;
-            await CompleteItem(todo);
+            var yodel = mi.CommandParameter as Yodel;
+            await CompleteItem(yodel);
         }
 
         // http://developer.xamarin.com/guides/cross-platform/xamarin-forms/working-with/listview/#pulltorefresh
@@ -163,7 +219,7 @@ namespace mondaydinner
         {
             using (var scope = new ActivityIndicatorScope(syncIndicator, showActivityIndicator))
             {
-                yodelList.ItemsSource = await manager.GetTodoItemsAsync(syncItems);
+                yodelList.ItemsSource = await manager.GetYodelsAsync(syncItems);
             }
         }
 
@@ -201,6 +257,41 @@ namespace mondaydinner
                 {
                     indicatorDelay.ContinueWith(t => SetIndicatorActivity(false), TaskScheduler.FromCurrentSynchronizationContext());
                 }
+            }
+        }
+
+        private async void gpsButton_Clicked(object sender, EventArgs e)
+        {
+            var locator = CrossGeolocator.Current;
+            if (locator.IsGeolocationAvailable && locator.IsGeolocationEnabled)
+            {
+                locator.DesiredAccuracy = 50;
+                labelGPS.Text = "Getting gps";
+
+                try
+                {
+                    var position = await locator.GetPositionAsync(timeoutMilliseconds: 10000);
+
+                    if (position == null)
+                    {
+                        labelGPS.Text = "null gps :(";
+                        return;
+                    }
+                    labelGPS.Text = string.Format("Time: {0} \nLat: {1} \nLong: {2} \n Altitude: {3} \nAltitude Accuracy: {4} \nAccuracy: {5} \n Heading: {6} \n Speed: {7}",
+                position.Timestamp, position.Latitude, position.Longitude,
+        position.Altitude, position.AltitudeAccuracy, position.Accuracy, position.Heading, position.Speed);
+                }
+                catch(Exception ex)
+                {
+                    //await DisplayAlert("Geolocator Error", "Couldn't access GPS", "OK");
+                    labelGPS.Text = "Geolocator Error: " + ex.Message;
+                }
+
+            }
+            else
+            {
+                //await DisplayAlert("Location Error", "Couldn't access GPS", "OK");
+                labelGPS.Text = "Location Error: Couldn't access GPS.";
             }
         }
     }

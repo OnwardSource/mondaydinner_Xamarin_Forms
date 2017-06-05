@@ -3,74 +3,158 @@
 				xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
                 xmlns:maps="clr-namespace:Xamarin.Forms.Maps;assembly=Xamarin.Forms.Maps"
 				x:Class="mondaydinner.YodelList"
-				Title="Azure Todo">
-  <Grid RowSpacing="0">
-    <Grid.RowDefinitions>
-      <RowDefinition Height="Auto" />
-      <RowDefinition Height="*" />
-    </Grid.RowDefinitions>
-    <ActivityIndicator Grid.RowSpan="3"
+				Title="GeoYodel">
+    <StackLayout Orientation="Vertical">
+        <RelativeLayout>
+            <Grid VerticalOptions="FillAndExpand">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="3*"/>
+                    <RowDefinition Height="3*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <ActivityIndicator Grid.RowSpan="3"
                        HorizontalOptions="Center"
                        VerticalOptions="Center"
                        IsVisible="False"
                        IsEnabled="True"
                        x:Name="syncIndicator"/>
-    <StackLayout Grid.Row="0" BackgroundColor="#5ABAFF" Padding="10,30,10,5">
-      <Label TextColor="#555555" Text="Azure App Service" />
-      <Grid>
-        <Grid.ColumnDefinitions>
-          <ColumnDefinition/>
-          <ColumnDefinition Width="Auto"/>
-        </Grid.ColumnDefinitions>
-        <Entry x:Name="newItemName"
+
+                <maps:Map 
+            x:Name="YodelMap"
+                    Grid.Row="0"
+                VerticalOptions="FillAndExpand"
+            MapType="Street" />
+
+                <!--<Label Text="Lorem ipsum dolor sit amet" BackgroundColor="Yellow" />-->
+                <!--<Label VerticalOptions="CenterAndExpand" Text="Lorem ipsum dolor sit amet, nobis doctus commodo eam no, ius ad persecuti temporibus. Homero impetus reprehendunt mel cu, mollis tibique principes per ea. Sale nostro eruditi no pro, mei unum saperet ne, te modo latine usu. Ius verear maiestatis an. Mel cu iriure officiis, ne eam impetus torquatos persecuti. Audire nusquam adversarium te quo." />-->
+
+                <ListView x:Name="yodelList"    
+                          Grid.Row="1"
+                          BackgroundColor="BlanchedAlmond"
+                    ItemSelected="OnSelected"
+				IsPullToRefreshEnabled="true" Refreshing="OnRefresh"
+				>
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <ViewCell.ContextActions>
+                                    <MenuItem Clicked="OnComplete" Text="Complete" CommandParameter="{Binding .}"/>
+                                </ViewCell.ContextActions>
+                                <StackLayout HorizontalOptions="StartAndExpand" Orientation="Horizontal" Padding="15,5,0,0">
+                                    <Image Source="{Binding Avatar}" Aspect="AspectFill" WidthRequest="32" HeightRequest="32" BackgroundColor="AliceBlue" />
+                                    <StackLayout Padding="5,0,0,0" VerticalOptions="StartAndExpand" Orientation="Vertical">
+                                        <Label Text="[First Last]" FontSize="Micro" />
+                                        <Label Text="{Binding Message}"  />
+                                        <Label Text="{Binding CreatedAt}" FontSize="Micro" />
+                                    </StackLayout>
+                                </StackLayout>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+
+                <Grid Grid.Row="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Entry x:Name="newItemName"
                   Placeholder="Item name" />
-        <StackLayout x:Name="buttonsPanel" Grid.Column="1" Orientation="Horizontal" HorizontalOptions="StartAndExpand">
-          <Button Text="+"
+                    <StackLayout x:Name="buttonsPanel" Grid.Column="1" Orientation="Horizontal" HorizontalOptions="StartAndExpand">
+                        <Button Text="+"
                   MinimumHeightRequest="30"
                   Clicked="OnAdd" />
-                    <Button x:Name="loginButton" Text="Sign-in" MinimumHeightRequest="30"
+                        <Button x:Name="loginButton" Text="Facebook" MinimumHeightRequest="30"
      Clicked="loginButton_Clicked"/>
-                </StackLayout>
-      </Grid>
+                        <Button x:Name="authButton" Text="Auth" MinimumHeightRequest="30"
+     Clicked="authButton_Clicked"/>
+                        <Button x:Name="gpsButton" Text="GPS" MinimumHeightRequest="30"
+     Clicked="gpsButton_Clicked"/>
+                    </StackLayout>
+                    <Label x:Name="labelGPS" Text="..gps.." FontSize="Micro" />
+                </Grid>
+            </Grid>
+            <!--<StackLayout RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0.75}"
+               RelativeLayout.YConstraint= "{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0.25}"
+               BackgroundColor="Gray">
+                
+
+
+            </StackLayout>-->
+            <!--<StackLayout Orientation="Vertical" VerticalOptions="FillAndExpand"
+                         RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}"
+                      BackgroundColor="Bisque">
+
+
+            </StackLayout>-->
+
+        </RelativeLayout>
+
+
     </StackLayout>
-        <!--<StackLayout Grid.Row="1" VerticalOptions="StartAndExpand" Padding="30">
-            <maps:Map WidthRequest="320" HeightRequest="200"
+
+
+    <!--<Grid RowSpacing="0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <ActivityIndicator Grid.RowSpan="3"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center"
+                       IsVisible="False"
+                       IsEnabled="True"
+                       x:Name="syncIndicator"/>
+        <StackLayout Grid.Row="0" BackgroundColor="#5ABAFF" Padding="10,30,10,5">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Entry x:Name="newItemName"
+                  Placeholder="Item name" />
+                <StackLayout x:Name="buttonsPanel" Grid.Column="1" Orientation="Horizontal" HorizontalOptions="StartAndExpand">
+                    <Button Text="+"
+                  MinimumHeightRequest="30"
+                  Clicked="OnAdd" />
+                    <Button x:Name="loginButton" Text="Facebook" MinimumHeightRequest="30"
+     Clicked="loginButton_Clicked"/>
+                    <Button x:Name="authButton" Text="Auth" MinimumHeightRequest="30"
+     Clicked="authButton_Clicked"/>
+                    <Button x:Name="gpsButton" Text="GPS" MinimumHeightRequest="30"
+     Clicked="gpsButton_Clicked"/>
+                </StackLayout>
+            </Grid>
+        </StackLayout>
+        <StackLayout Grid.Row="1" VerticalOptions="StartAndExpand" Padding="10,30,10,5">
+            <maps:Map WidthRequest="320" HeightRequest="200" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"
             x:Name="YodelMap"
-            IsShowingUser="true"
             MapType="Street"
         />
-        </StackLayout>-->
-        <StackLayout Grid.Row="1" VerticalOptions="StartAndExpand" Padding="30">
-            <maps:Map WidthRequest="320" HeightRequest="200"
-            x:Name="YodelMap"
-            MapType="Street"
-        />
+
         </StackLayout>
         <ListView x:Name="yodelList"
 				ItemSelected="OnSelected"
 				IsPullToRefreshEnabled="true" Refreshing="OnRefresh"
 				Grid.Row="2">
-      <ListView.ItemTemplate>
-        <DataTemplate>
-          <ViewCell>
-            <ViewCell.ContextActions>
-              <MenuItem Clicked="OnComplete" Text="Complete" CommandParameter="{Binding .}"/>
-            </ViewCell.ContextActions>
-            <StackLayout HorizontalOptions="StartAndExpand" Orientation="Horizontal" Padding="15,5,0,0">
-              <StackLayout Padding="5,0,0,0" VerticalOptions="StartAndExpand" Orientation="Vertical">
-                <Image Source="{Binding Avatar}" />
-                <Label Text="{Binding Message}"  />
-                <Label Text="{Binding Latitude}" />
-            </StackLayout>
-            </StackLayout>
-          </ViewCell>
-        </DataTemplate>
-      </ListView.ItemTemplate>
-    </ListView>
-        <StackLayout Grid.Row="3" BackgroundColor="#5ABAFF" Padding="10,30,10,5">
-            <Label x:Name="timestampLabel" TextColor="#555555" Text="..Timestamp.." />
-            <Label x:Name="latitudeLabel" TextColor="#555555" Text="..Latitude.." />
-            <Label x:Name="longitudeLabel" TextColor="#555555" Text="..Longitude.." />
-        </StackLayout>
-    </Grid>
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <ViewCell.ContextActions>
+                            <MenuItem Clicked="OnComplete" Text="Complete" CommandParameter="{Binding .}"/>
+                        </ViewCell.ContextActions>
+                        <StackLayout HorizontalOptions="StartAndExpand" Orientation="Horizontal" Padding="15,5,0,0">
+                            <Image Source="{Binding Avatar}" Aspect="AspectFill" WidthRequest="32" HeightRequest="32" BackgroundColor="AliceBlue" />
+                            <StackLayout Padding="5,0,0,0" VerticalOptions="StartAndExpand" Orientation="Vertical">
+                                <Label Text="[First Last]" FontSize="Micro" />
+                                <Label Text="{Binding Message}"  />
+                                <Label Text="{Binding CreatedAt}" FontSize="Micro" />
+                            </StackLayout>
+                        </StackLayout>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </Grid>-->
 </ContentPage>

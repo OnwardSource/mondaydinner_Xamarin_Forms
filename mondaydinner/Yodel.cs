@@ -24,6 +24,15 @@ namespace mondaydinner
         [JsonProperty(PropertyName = "message")]
         public string Message { get; set; }
 
+        [JsonProperty(PropertyName = "createdAt")]
+        public DateTime CreatedAt { get; set; }
+
+        [JsonProperty(PropertyName = "updatedAt")]
+        public DateTime UpdatedAt { get; set; }
+
+        [JsonProperty(PropertyName = "deleted")]
+        public bool Deleted { get; set; }
+
         [Version]
         public string Version { get; set; }
 	}
