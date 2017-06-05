@@ -26,12 +26,18 @@
                 VerticalOptions="FillAndExpand"
             MapType="Street" />
 
-                <!--<Label Text="Lorem ipsum dolor sit amet" BackgroundColor="Yellow" />-->
-                <!--<Label VerticalOptions="CenterAndExpand" Text="Lorem ipsum dolor sit amet, nobis doctus commodo eam no, ius ad persecuti temporibus. Homero impetus reprehendunt mel cu, mollis tibique principes per ea. Sale nostro eruditi no pro, mei unum saperet ne, te modo latine usu. Ius verear maiestatis an. Mel cu iriure officiis, ne eam impetus torquatos persecuti. Audire nusquam adversarium te quo." />-->
-
+                <StackLayout x:Name="loginView" IsVisible="True" Grid.Row="1" VerticalOptions="FillAndExpand">
+                    <!--<Label Text="Lorem ipsum dolor sit amet" BackgroundColor="Yellow" />-->
+                    <Label VerticalOptions="Center" Text="Lorem ipsum dolor sit amet, nobis doctus commodo eam no, ius ad persecuti temporibus. Homero impetus reprehendunt mel cu, mollis tibique principes per ea. Sale nostro eruditi no pro, mei unum saperet ne, te modo latine usu. Ius verear maiestatis an. Mel cu iriure officiis, ne eam impetus torquatos persecuti. Audire nusquam adversarium te quo." />
+                    <Button x:Name="loginButton" VerticalOptions="Center" Text="Sign in with Facebook" MinimumHeightRequest="30"
+     Clicked="loginButton_Clicked"/>
+                    <!--<Button x:Name="authButton" Text="Auth" MinimumHeightRequest="30"
+     Clicked="authButton_Clicked"/>-->
+                </StackLayout>
+                
                 <ListView x:Name="yodelList"    
                           Grid.Row="1"
-                          BackgroundColor="BlanchedAlmond"
+                          IsVisible="False"                          
                     ItemSelected="OnSelected"
 				IsPullToRefreshEnabled="true" Refreshing="OnRefresh"
 				>
@@ -65,10 +71,6 @@
                         <Button Text="+"
                   MinimumHeightRequest="30"
                   Clicked="OnAdd" />
-                        <Button x:Name="loginButton" Text="Facebook" MinimumHeightRequest="30"
-     Clicked="loginButton_Clicked"/>
-                        <Button x:Name="authButton" Text="Auth" MinimumHeightRequest="30"
-     Clicked="authButton_Clicked"/>
                         <Button x:Name="gpsButton" Text="GPS" MinimumHeightRequest="30"
      Clicked="gpsButton_Clicked"/>
                     </StackLayout>

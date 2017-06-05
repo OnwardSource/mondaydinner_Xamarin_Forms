@@ -43,6 +43,9 @@ namespace UWP
                         .LoginAsync(MobileServiceAuthenticationProvider.Facebook);
                     if (user != null)
                     {
+                        Settings.AuthToken = user?.MobileServiceAuthenticationToken ?? string.Empty;
+                        Settings.UserId = user?.UserId ?? string.Empty;
+
                         success = true;
                         message = string.Format("You are now signed-in as {0}.", user.UserId);
                     }

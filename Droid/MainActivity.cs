@@ -33,6 +33,9 @@ namespace mondaydinner.Droid
                     MobileServiceAuthenticationProvider.Facebook);
                 if (user != null)
                 {
+                    Settings.AuthToken = user?.MobileServiceAuthenticationToken ?? string.Empty;
+                    Settings.UserId = user?.UserId ?? string.Empty;
+
                     message = string.Format("you are now signed-in as {0}.",
                         user.UserId);
                     success = true;
