@@ -5,158 +5,103 @@
 				x:Class="mondaydinner.YodelList"
 				Title="GeoYodel">
     <StackLayout Orientation="Vertical">
-        <RelativeLayout>
-            <Grid VerticalOptions="FillAndExpand">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="3*"/>
-                    <RowDefinition Height="3*"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
+        <Grid VerticalOptions="FillAndExpand">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="3*"/>
+                <RowDefinition Height="3*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
 
-                <ActivityIndicator Grid.RowSpan="3"
+            <ActivityIndicator Grid.RowSpan="3"
                        HorizontalOptions="Center"
                        VerticalOptions="Center"
                        IsVisible="False"
                        IsEnabled="True"
                        x:Name="syncIndicator"/>
 
-                <maps:Map 
+            <maps:Map 
             x:Name="YodelMap"
                     Grid.Row="0"
                 VerticalOptions="FillAndExpand"
             MapType="Street" />
 
-                <StackLayout x:Name="loginView" IsVisible="True" Grid.Row="1" VerticalOptions="FillAndExpand">
-                    <!--<Label Text="Lorem ipsum dolor sit amet" BackgroundColor="Yellow" />-->
-                    <Label VerticalOptions="Center" Text="Lorem ipsum dolor sit amet, nobis doctus commodo eam no, ius ad persecuti temporibus. Homero impetus reprehendunt mel cu, mollis tibique principes per ea. Sale nostro eruditi no pro, mei unum saperet ne, te modo latine usu. Ius verear maiestatis an. Mel cu iriure officiis, ne eam impetus torquatos persecuti. Audire nusquam adversarium te quo." />
-                    <Button x:Name="loginButton" VerticalOptions="Center" Text="Sign in with Facebook" MinimumHeightRequest="30"
-     Clicked="loginButton_Clicked"/>
-                    <!--<Button x:Name="authButton" Text="Auth" MinimumHeightRequest="30"
-     Clicked="authButton_Clicked"/>-->
-                </StackLayout>
-                
-                <ListView x:Name="yodelList"    
+            <ListView x:Name="yodelList"    
                           Grid.Row="1"
-                          IsVisible="False"                          
+                          IsVisible="True"                          
                     ItemSelected="OnSelected"
 				IsPullToRefreshEnabled="true" Refreshing="OnRefresh"
 				>
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <ViewCell>
-                                <ViewCell.ContextActions>
-                                    <MenuItem Clicked="OnComplete" Text="Complete" CommandParameter="{Binding .}"/>
-                                </ViewCell.ContextActions>
-                                <StackLayout HorizontalOptions="StartAndExpand" Orientation="Horizontal" Padding="15,5,0,0">
-                                    <Image Source="{Binding Avatar}" Aspect="AspectFill" WidthRequest="32" HeightRequest="32" BackgroundColor="AliceBlue" />
-                                    <StackLayout Padding="5,0,0,0" VerticalOptions="StartAndExpand" Orientation="Vertical">
-                                        <Label Text="[First Last]" FontSize="Micro" />
-                                        <Label Text="{Binding Message}"  />
-                                        <Label Text="{Binding CreatedAt}" FontSize="Micro" />
-                                    </StackLayout>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <ViewCell.ContextActions>
+                                <MenuItem Clicked="OnComplete" Text="Complete" CommandParameter="{Binding .}"/>
+                            </ViewCell.ContextActions>
+                            <StackLayout HorizontalOptions="StartAndExpand" Orientation="Horizontal" Padding="15,5,0,0">
+                                <Image Source="ic_account_box.png" Aspect="AspectFill" WidthRequest="32" HeightRequest="32" BackgroundColor="AliceBlue" />
+                                <StackLayout Padding="5,0,0,0" VerticalOptions="StartAndExpand" Orientation="Vertical">
+                                    <Label Text="{Binding Latitude}" FontSize="Micro" />
+                                    <Label Text="{Binding Message}"  />
+                                    <Label Text="{Binding CreatedAt}" FontSize="Micro" />
                                 </StackLayout>
-                            </ViewCell>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
+                            </StackLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
 
-                <Grid Grid.Row="2">
+            <Grid x:Name="YodelBar" Grid.Row="2" IsVisible="False">
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="2*"/>
+                </Grid.RowDefinitions>
+                <Grid x:Name="quickPanel" Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Button x:Name="quickButton1" Grid.Column="0" Text="8675309" Clicked="quickButton1_Clicked" />
+                    <Button x:Name="quickButton2" Grid.Column="1" Text="Yo-de-lay-hee-hoo" Clicked="quickButton2_Clicked" />
+                    <Button x:Name="quickButton3" Grid.Column="2" Text="Covfefe" Clicked="quickButton3_Clicked" />
+                </Grid>
+
+                <Grid Grid.Row="1">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <Entry x:Name="newItemName"
-                  Placeholder="Item name" />
+                    <Entry x:Name="newItemName" Placeholder="Yodel here" />
                     <StackLayout x:Name="buttonsPanel" Grid.Column="1" Orientation="Horizontal" HorizontalOptions="StartAndExpand">
-                        <Button Text="+"
-                  MinimumHeightRequest="30"
+                        <Button Image="ic_edit_location.png" 
                   Clicked="OnAdd" />
-                        <Button x:Name="gpsButton" Text="GPS" MinimumHeightRequest="30"
-     Clicked="gpsButton_Clicked"/>
+
                     </StackLayout>
-                    <Label x:Name="labelGPS" Text="..gps.." FontSize="Micro" />
                 </Grid>
             </Grid>
-            <!--<StackLayout RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0.75}"
-               RelativeLayout.YConstraint= "{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0.25}"
-               BackgroundColor="Gray">
-                
 
-
-            </StackLayout>-->
-            <!--<StackLayout Orientation="Vertical" VerticalOptions="FillAndExpand"
-                         RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}"
-                      BackgroundColor="Bisque">
-
-
-            </StackLayout>-->
-
-        </RelativeLayout>
-
-
-    </StackLayout>
-
-
-    <!--<Grid RowSpacing="0">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-        <ActivityIndicator Grid.RowSpan="3"
-                       HorizontalOptions="Center"
-                       VerticalOptions="Center"
-                       IsVisible="False"
-                       IsEnabled="True"
-                       x:Name="syncIndicator"/>
-        <StackLayout Grid.Row="0" BackgroundColor="#5ABAFF" Padding="10,30,10,5">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-                <Entry x:Name="newItemName"
-                  Placeholder="Item name" />
-                <StackLayout x:Name="buttonsPanel" Grid.Column="1" Orientation="Horizontal" HorizontalOptions="StartAndExpand">
-                    <Button Text="+"
-                  MinimumHeightRequest="30"
-                  Clicked="OnAdd" />
-                    <Button x:Name="loginButton" Text="Facebook" MinimumHeightRequest="30"
+            <Grid x:Name="LoginBar" Grid.Row="2" IsVisible="True">
+                <StackLayout Orientation="Vertical">
+                    <Label VerticalOptions="Center" Text="Lorem ipsum dolor sit amet, nobis doctus commodo eam no, ius ad persecuti temporibus. Homero impetus reprehendunt mel cu, mollis tibique principes per ea. Sale nostro eruditi no pro, mei unum saperet ne, te modo latine usu. Ius verear maiestatis an. Mel cu iriure officiis, ne eam impetus torquatos persecuti. Audire nusquam adversarium te quo." />
+                    <Button x:Name="loginButton" VerticalOptions="Center" Text="Sign in with Facebook" MinimumHeightRequest="30"
      Clicked="loginButton_Clicked"/>
-                    <Button x:Name="authButton" Text="Auth" MinimumHeightRequest="30"
-     Clicked="authButton_Clicked"/>
-                    <Button x:Name="gpsButton" Text="GPS" MinimumHeightRequest="30"
-     Clicked="gpsButton_Clicked"/>
+                    <!--<Button x:Name="msLoginButton" IsEnabled="False" VerticalOptions="Center" Text="Sign in with Microsoft" MinimumHeightRequest="30"
+     Clicked="loginButton_Clicked"/>-->
                 </StackLayout>
             </Grid>
-        </StackLayout>
-        <StackLayout Grid.Row="1" VerticalOptions="StartAndExpand" Padding="10,30,10,5">
-            <maps:Map WidthRequest="320" HeightRequest="200" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"
-            x:Name="YodelMap"
-            MapType="Street"
-        />
 
-        </StackLayout>
-        <ListView x:Name="yodelList"
-				ItemSelected="OnSelected"
-				IsPullToRefreshEnabled="true" Refreshing="OnRefresh"
-				Grid.Row="2">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <ViewCell>
-                        <ViewCell.ContextActions>
-                            <MenuItem Clicked="OnComplete" Text="Complete" CommandParameter="{Binding .}"/>
-                        </ViewCell.ContextActions>
-                        <StackLayout HorizontalOptions="StartAndExpand" Orientation="Horizontal" Padding="15,5,0,0">
-                            <Image Source="{Binding Avatar}" Aspect="AspectFill" WidthRequest="32" HeightRequest="32" BackgroundColor="AliceBlue" />
-                            <StackLayout Padding="5,0,0,0" VerticalOptions="StartAndExpand" Orientation="Vertical">
-                                <Label Text="[First Last]" FontSize="Micro" />
-                                <Label Text="{Binding Message}"  />
-                                <Label Text="{Binding CreatedAt}" FontSize="Micro" />
-                            </StackLayout>
-                        </StackLayout>
-                    </ViewCell>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
-    </Grid>-->
+            <Grid x:Name="ActionBar" Grid.Row="2" IsVisible="False">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Button x:Name="gpsButton" Grid.Column="0" Text="GPS" Image="ic_account_box.png" MinimumHeightRequest="24" HorizontalOptions="Fill" VerticalOptions="Start" Clicked="gpsButton_Clicked"/>
+                <Button x:Name="yodelButton" Image="ic_edit_location.png" Grid.Column="1" MinimumHeightRequest="24" HorizontalOptions="Fill" VerticalOptions="Start" Text="Yodel"
+                        Clicked="yodelButton_Clicked"/>
+            </Grid>
+        </Grid>
+
+        <Label x:Name="labelGPS" Text="..gps.." FontSize="Micro" />
+    </StackLayout>
 </ContentPage>

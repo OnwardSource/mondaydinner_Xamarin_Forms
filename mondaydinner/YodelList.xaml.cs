@@ -29,7 +29,8 @@ namespace mondaydinner
                 await RefreshItems(true, syncItems: false);
                 ShowYodels = true;
                 yodelList.IsVisible = true;
-                loginView.IsVisible = false;
+                LoginBar.IsVisible = false;
+                ActionBar.IsVisible = true;
             }
         }
 
@@ -221,7 +222,7 @@ namespace mondaydinner
             }
             else
             {
-
+                await RefreshItems(true, syncItems: false);
             }
         }
 
@@ -234,6 +235,7 @@ namespace mondaydinner
 
         async Task CompleteItem(Yodel item)
         {
+            item.Deleted = true;
             //item.Done = true;
             await manager.SaveYodelAsync(item);
             yodelList.ItemsSource = await manager.GetYodelsAsync();
@@ -241,11 +243,19 @@ namespace mondaydinner
 
         public async void OnAdd(object sender, EventArgs e)
         {
+            // Empty
+            if (newItemName.Text.Length == 0)
+            {
+                YodelBar.IsVisible = false;
+                ActionBar.IsVisible = true;
+                return;
+            }
+
             var locator = CrossGeolocator.Current;
             if (locator.IsGeolocationAvailable && locator.IsGeolocationEnabled)
             {
                 locator.DesiredAccuracy = 50;
-                labelGPS.Text = "Getting gps";
+                labelGPS.Text = "Acquiring gps";
 
                 try
                 {
@@ -253,7 +263,8 @@ namespace mondaydinner
 
                     if (position == null)
                     {
-                        labelGPS.Text = "null gps :(";
+                        await DisplayAlert("GPS null", "Null GPS", "OK");
+                        //labelGPS.Text = "null gps :(";
                         return;
                     }
                     labelGPS.Text = string.Format("Time: {0} \nLat: {1} \nLong: {2} \n Altitude: {3} \nAltitude Accuracy: {4} \nAccuracy: {5} \n Heading: {6} \n Speed: {7}",
@@ -273,15 +284,16 @@ namespace mondaydinner
                 }
                 catch (Exception ex)
                 {
-                    //await DisplayAlert("Geolocator Error", "Couldn't access GPS", "OK");
-                    labelGPS.Text = "Geolocator Error: " + ex.Message;
+                    await DisplayAlert("Geolocator Error", "Couldn't access GPS, did not Yodel", "OK");
                 }
             }
             else
             {
-                //await DisplayAlert("Location Error", "Couldn't access GPS", "OK");
-                labelGPS.Text = "Location Error: Couldn't access GPS.";
+                await DisplayAlert("Location Error", "Couldn't access GPS, did not Yodel", "OK");
             }
+
+            YodelBar.IsVisible = false;
+            ActionBar.IsVisible = true;
         }
 
         // Event handlers
@@ -296,13 +308,6 @@ namespace mondaydinner
             YodelMap.MoveToRegion(
                 MapSpan.FromCenterAndRadius(
                     new Position(latitude, longitude), Distance.FromMiles(6)));
-
-            var pin = new Pin();
-            pin.Label = message;
-            pin.Position = new Position(latitude, longitude);
-            pin.Type = PinType.SearchResult;
-            YodelMap.Pins.Clear();
-            YodelMap.Pins.Add(pin);
 
             //if (Device.OS != TargetPlatform.iOS && yodel != null)
             //{
@@ -367,6 +372,15 @@ namespace mondaydinner
             using (var scope = new ActivityIndicatorScope(syncIndicator, showActivityIndicator))
             {
                 yodelList.ItemsSource = await manager.GetYodelsAsync(syncItems);
+
+                foreach(Yodel yodel in yodelList.ItemsSource)
+                {
+                    var pin = new Pin();
+                    pin.Label = yodel.Message;
+                    pin.Position = new Position(yodel.Latitude, yodel.Longitude);
+                    pin.Type = PinType.SavedPin;
+                    YodelMap.Pins.Add(pin);
+                }                
             }
         }
 
@@ -440,6 +454,27 @@ namespace mondaydinner
                 //await DisplayAlert("Location Error", "Couldn't access GPS", "OK");
                 labelGPS.Text = "Location Error: Couldn't access GPS.";
             }
+        }
+
+        private void yodelButton_Clicked(object sender, EventArgs e)
+        {
+            ActionBar.IsVisible = false;
+            YodelBar.IsVisible = true;
+        }
+
+        private void quickButton1_Clicked(object sender, EventArgs e)
+        {
+            newItemName.Text = "867-5309 (Jenny), you got it?";
+        }
+
+        private void quickButton2_Clicked(object sender, EventArgs e)
+        {
+            newItemName.Text = "Yo-de-lay-hee-hooooo!";
+        }
+
+        private void quickButton3_Clicked(object sender, EventArgs e)
+        {
+            newItemName.Text = "Covfefe aka Coverage";
         }
     }
 }

@@ -98,6 +98,8 @@ namespace mondaydinner
                 IEnumerable<Yodel> items = await yodelTable
                     //.Where(todoItem => !todoItem.Done)
                     .OrderByDescending(x => x.CreatedAt)
+                    .Where(yodel => yodel.Deleted != true)
+                    .Take(25)
                     .ToEnumerableAsync();               
 
                 return new ObservableCollection<Yodel>(items);

@@ -7,7 +7,7 @@
     <ProjectGuid>{3AFA591D-C115-4AC9-9519-F788373ECDE9}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>mondaydinner</RootNamespace>
-    <AssemblyName>mondaydinner</AssemblyName>
+    <AssemblyName>geoyodel</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Profile259</TargetFrameworkProfile>
     <MinimumVisualStudioVersion>10.0</MinimumVisualStudioVersion>

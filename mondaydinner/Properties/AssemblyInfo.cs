@@ -4,12 +4,12 @@ using System.Runtime.CompilerServices;
 // Information about this assembly is defined by the following attributes.
 // Change them to the values specific to your project.
 
-[assembly: AssemblyTitle ("mondaydinner")]
+[assembly: AssemblyTitle("GeoYodel")]
 [assembly: AssemblyDescription ("")]
 [assembly: AssemblyConfiguration ("")]
-[assembly: AssemblyCompany ("")]
-[assembly: AssemblyProduct ("")]
-[assembly: AssemblyCopyright ("craigdunn")]
+[assembly: AssemblyCompany("Onward Source")]
+[assembly: AssemblyProduct("GeoYodel")]
+[assembly: AssemblyCopyright("Copyright 2017")]
 [assembly: AssemblyTrademark ("")]
 [assembly: AssemblyCulture ("")]
 
